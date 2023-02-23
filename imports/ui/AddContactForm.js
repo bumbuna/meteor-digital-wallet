@@ -19,27 +19,33 @@ export default AddContactForm = (props) => {
         setProfileImageUrl((''))
     }
     return (
-        <form>
+        <form onSubmit={(e) => {
+            e.preventDefault()
+            saveNewContact()
+        }}>
             <h2>Add a new contact</h2>
             <label>Full Name: </label>
             <input
                 value={name}
+                required={true}
                 onChange={(e) => setName(e.target.value)}
                 type='text'/>
             <br/>
             <label>Email Address: </label>
             <input
                 value={email}
+                required={true}
                 onChange={(e) => setEmail(e.target.value)}
                 type='email'/>
             <br/>
             <label>Profile Image Url: </label>
             <input
                 value={profileImageUrl}
+                required={true}
                 onChange={(e) => setProfileImageUrl(e.target.value)}
                 type='text'/>
             <br/>
-            <button type='button' onClick={saveNewContact}>Save New Contact</button>
+            <button type='submit'>Save New Contact</button>
         </form>
     )
 }
