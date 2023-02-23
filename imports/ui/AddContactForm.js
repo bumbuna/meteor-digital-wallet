@@ -31,7 +31,7 @@ export default AddContactForm = (props) => {
             <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                type='text'/>
+                type='email'/>
             <br/>
             <label>Profile Image Url: </label>
             <input
