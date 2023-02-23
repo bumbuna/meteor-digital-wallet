@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import {ContactsCollection} from "../api/Contact";
+import Form from "react-bootstrap/Form";
+import {Container, Button, Row, Col} from "react-bootstrap";
+
 
 export default AddContactForm = (props) => {
 
@@ -19,33 +22,50 @@ export default AddContactForm = (props) => {
         setProfileImageUrl((''))
     }
     return (
-        <form onSubmit={(e) => {
+        <Form onSubmit={(e) => {
             e.preventDefault()
             saveNewContact()
         }}>
-            <h2>Add a new contact</h2>
-            <label>Full Name: </label>
-            <input
-                value={name}
-                required={true}
-                onChange={(e) => setName(e.target.value)}
-                type='text'/>
-            <br/>
-            <label>Email Address: </label>
-            <input
-                value={email}
-                required={true}
-                onChange={(e) => setEmail(e.target.value)}
-                type='email'/>
-            <br/>
-            <label>Profile Image Url: </label>
-            <input
-                value={profileImageUrl}
-                required={true}
-                onChange={(e) => setProfileImageUrl(e.target.value)}
-                type='text'/>
-            <br/>
-            <button type='submit'>Save New Contact</button>
-        </form>
+            <Row md={3} sm={1} xs={1}>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Full Name: </Form.Label>
+                        <Form.Control
+                            value={name}
+                            placeholder={'Contact Name'}
+                            required={true}
+                            onChange={(e) => setName(e.target.value)}
+                            type='text'/>
+                    </Form.Group>
+                </Col>
+            <Col>
+                <Form.Group>
+                    <Form.Label>Email Address: </Form.Label>
+                    <Form.Control
+                        value={email}
+                        placeholder={'Email  Address'}
+                        required={true}
+                        onChange={e => setEmail(e.target.value)}
+                        type='text'/>
+                </Form.Group>
+            </Col>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Profile Image Url: </Form.Label>
+                        <Form.Control
+                            value={profileImageUrl}
+                            placeholder={'Profile image url'}
+                            required={true}
+                            onChange={(e) => setProfileImageUrl(e.target.value)}
+                            type='text'/>
+                    </Form.Group>
+                </Col>
+
+            </Row>
+            <div className={'d-flex justify-content-end pt-2'}>
+                <Button type='submit'>Save Contact</Button>
+            </div>
+
+        </Form>
     )
 }
