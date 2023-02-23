@@ -1,7 +1,8 @@
 import React, {useState} from "react";
-import {ContactsCollection} from "../api/Contact";
+import {Meteor} from "meteor/meteor";
 import Form from "react-bootstrap/Form";
-import {Container, Button, Row, Col} from "react-bootstrap";
+import {Container, Button, Row, Col, Alert} from "react-bootstrap";
+import ContactFormAlert from "./Components/ContactFormAlert";
 
 
 export default AddContactForm = (props) => {
@@ -9,23 +10,31 @@ export default AddContactForm = (props) => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [profileImageUrl, setProfileImageUrl] = useState('')
+    const [error, setError] = useState('')
+    const [success, setSuccess] = useState('')
 
     const saveNewContact = () => {
-        ContactsCollection.insert({
-            name: name,
-            email: email,
-            profileImageUrl: profileImageUrl,
-            addedOn: (new Date()).toUTCString()
-        })
-        setName('')
-        setEmail('')
-        setProfileImageUrl((''))
+       Meteor.call('contacts.insert', {name, email, profileImageUrl}, (errorResponse) => {
+           if(errorResponse) {
+               setError(errorResponse.error)
+               setTimeout(() => setError(''), 3000)
+           } else {
+               setName('')
+               setEmail('')
+               setProfileImageUrl('')
+               setSuccess('Contact has been added')
+               setTimeout(() => setSuccess(''), 3000)
+           }
+       })
+
     }
     return (
         <Form onSubmit={(e) => {
             e.preventDefault()
             saveNewContact()
         }}>
+            {error && ContactFormAlert({message: error, variant: 'danger'})}
+            {success && ContactFormAlert({message: success, variant: 'success'})}
             <Row md={3} sm={1} xs={1}>
                 <Col>
                     <Form.Group>
@@ -33,7 +42,6 @@ export default AddContactForm = (props) => {
                         <Form.Control
                             value={name}
                             placeholder={'Contact Name'}
-                            required={true}
                             onChange={(e) => setName(e.target.value)}
                             type='text'/>
                     </Form.Group>
@@ -44,7 +52,6 @@ export default AddContactForm = (props) => {
                     <Form.Control
                         value={email}
                         placeholder={'Email  Address'}
-                        required={true}
                         onChange={e => setEmail(e.target.value)}
                         type='text'/>
                 </Form.Group>
@@ -55,7 +62,6 @@ export default AddContactForm = (props) => {
                         <Form.Control
                             value={profileImageUrl}
                             placeholder={'Profile image url'}
-                            required={true}
                             onChange={(e) => setProfileImageUrl(e.target.value)}
                             type='text'/>
                     </Form.Group>

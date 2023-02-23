@@ -6,7 +6,7 @@ import {Col, Container, Image, ListGroup, Ratio, Row} from "react-bootstrap";
 export default ContactList = (props) => {
 
     let contacts = useTracker(() => {
-        return ContactsCollection.find().fetch()
+        return ContactsCollection.find({}, {sort: {addedOn: -1}}).fetch()
     })
     return(
         <>
