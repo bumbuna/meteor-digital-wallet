@@ -1,70 +1,74 @@
-import React, {useState} from "react";
-import {Meteor} from "meteor/meteor";
+import React, { useState } from "react";
+import { Meteor } from "meteor/meteor";
 import Form from "react-bootstrap/Form";
-import {Container, Button, Row, Col, Alert} from "react-bootstrap";
-import ContactFormAlert from "./Components/ContactFormAlert";
+import { Button, Row, Col, Alert } from "react-bootstrap";
 
 
-export default AddContactForm = (props) => {
+const ContactFormGroup = ({ placeholder, updateValue, type, value, label }) => {
+    return (
+        <Form.Group>
+            <Form.Label>{label}</Form.Label>
+            <Form.Control
+                value={value}
+                placeholder={placeholder}
+                onChange={(e) => updateValue(e.target.value)}
+                type={type} />
+        </Form.Group>)
+}
+
+const ContactFormAlert = ({ message, variant }) => {
+    return (
+        <Alert show={message != ''} variant={variant}>
+            {message}
+        </Alert>
+    )
+}
+
+
+export default AddContactForm = () => {
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [profileImageUrl, setProfileImageUrl] = useState('')
-    const [error, setError] = useState('')
-    const [success, setSuccess] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
+    const alertTimeoutInMs = 3000
 
     const saveNewContact = () => {
-       Meteor.call('contacts.insert', {name, email, profileImageUrl}, (errorResponse) => {
-           if(errorResponse) {
-               setError(errorResponse.error)
-               setTimeout(() => setError(''), 3000)
-           } else {
-               setName('')
-               setEmail('')
-               setProfileImageUrl('')
-               setSuccess('Contact has been added')
-               setTimeout(() => setSuccess(''), 3000)
-           }
-       })
+        Meteor.call('contacts.insert', { name, email, profileImageUrl }, (errorResponse) => {
+            if (errorResponse) {
+                setErrorMessage(errorResponse.error)
+                setTimeout(() => setErrorMessage(''), alertTimeoutInMs)
+            } else {
+                clearFormFields()
+                setSuccessMessage('Contact has been added')
+                setTimeout(() => setSuccessMessage(''), alertTimeoutInMs)
+            }
+        })
 
     }
+
+    const clearFormFields = () => {
+        setName('')
+        setEmail('')
+        setProfileImageUrl('')
+    }
+
     return (
         <Form onSubmit={(e) => {
             e.preventDefault()
             saveNewContact()
         }}>
-            {error && ContactFormAlert({message: error, variant: 'danger'})}
-            {success && ContactFormAlert({message: success, variant: 'success'})}
+            {ContactFormAlert({ message: errorMessage || successMessage, variant: errorMessage ? 'danger' : 'success' })}
             <Row md={3} sm={1} xs={1}>
                 <Col>
-                    <Form.Group>
-                        <Form.Label>Full Name: </Form.Label>
-                        <Form.Control
-                            value={name}
-                            placeholder={'Contact Name'}
-                            onChange={(e) => setName(e.target.value)}
-                            type='text'/>
-                    </Form.Group>
+                    <ContactFormGroup key='name' type={'text'} value={name} updateValue={setName} placeholder={'John Doe'} label={'full name:'} />
                 </Col>
-            <Col>
-                <Form.Group>
-                    <Form.Label>Email Address: </Form.Label>
-                    <Form.Control
-                        value={email}
-                        placeholder={'Email  Address'}
-                        onChange={e => setEmail(e.target.value)}
-                        type='text'/>
-                </Form.Group>
-            </Col>
                 <Col>
-                    <Form.Group>
-                        <Form.Label>Profile Image Url: </Form.Label>
-                        <Form.Control
-                            value={profileImageUrl}
-                            placeholder={'Profile image url'}
-                            onChange={(e) => setProfileImageUrl(e.target.value)}
-                            type='text'/>
-                    </Form.Group>
+                    <ContactFormGroup key='email' type={'email'} value={email} updateValue={setEmail} placeholder={'yourname@example.com'} label={'email address:'} />
+                </Col>
+                <Col>
+                    <ContactFormGroup key='profileimage' type={'text'} value={profileImageUrl} updateValue={setProfileImageUrl} placeholder={'https://mysite.com/logo.png'} label={'image url:'} />
                 </Col>
 
             </Row>
