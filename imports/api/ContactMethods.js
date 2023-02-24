@@ -8,7 +8,13 @@ Meteor.methods({
         }
         return ContactsCollection.insert({
             name, email, profileImageUrl,
-            addedOn: new Date().toUTCString()
+            addedOn: new Date()
         })
+    },
+    'contacts.remove' : ({id}) => {
+        if(!id) {
+            throw new Meteor.Error('please provide a valid Id')
+        }
+        return ContactsCollection.remove({_id: id})
     }
 })

@@ -1,7 +1,8 @@
 import React from "react";
 import {ContactsCollection} from "../api/Contact";
 import {useTracker} from 'meteor/react-meteor-data'
-import {Col, Container, Image, ListGroup, Ratio, Row} from "react-bootstrap";
+import {Col, Container, Image, ListGroup, Ratio, Row, Button} from "react-bootstrap";
+import {Trash, Trash2} from "react-bootstrap-icons";
 
 export default ContactList = (props) => {
 
@@ -49,6 +50,18 @@ export default ContactList = (props) => {
                                             </span>
                                                 </div>
 
+                                            </div>
+                                            <div className={'d-flex flex-fill justify-content-end'}>
+                                                <Button onClick={() => {
+                                                    Meteor.call('contacts.remove', ({id: contact._id}), (errorResponse) => {
+                                                        if(errorResponse) {
+                                                            alert(errorResponse.error)
+                                                        }
+                                                    })
+                                                }
+                                                } variant={'outline-light'} as={'div'} className={'text-danger border-0 p-0 my-auto fs-4'}>
+                                                    <Trash/>
+                                                </Button>
                                             </div>
                                         </div>
 
