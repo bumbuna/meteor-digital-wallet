@@ -1,8 +1,27 @@
 import React, { memo } from "react";
 import { ContactsCollection } from "../api/Contact";
 import { useFind, useSubscribe } from 'meteor/react-meteor-data'
-import { Col, Container, Image, ListGroup, Ratio, Row, Button } from "react-bootstrap";
-import { Trash } from "react-bootstrap-icons";
+import { Image, ListGroup, Ratio, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { FileZip, PencilSquare, Trash } from "react-bootstrap-icons";
+import { ContactFormModal } from "./ContactFormModal";
+
+const ContactItemActionButton = ({ contact, tooltipText = '', onClickAction, color = '', icon }) => {
+    return (
+        <OverlayTrigger
+            key={'top'}
+            placement={'top'}
+            overlay={
+                <Tooltip id={contact._id}>
+                    {tooltipText}
+                </Tooltip>
+            }>
+            <Button onClick={() => onClickAction({ contact })} variant={'outline-light'} as={'div'} className={`${color} border-0 p-0 my-auto mx-2 fs-4`}>
+                {icon}
+            </Button>
+        </OverlayTrigger>
+    )
+}
+
 
 export default ContactList = (props) => {
     const isLoading = useSubscribe('allcontacts');
@@ -20,6 +39,7 @@ export default ContactList = (props) => {
     if (isLoading()) {
         return <p>Loading your Contact List...</p>
     }
+
 
     const ContactItem = memo(({ contact }) => {
         return <ListGroup.Item key={contact.email}>
@@ -53,9 +73,28 @@ export default ContactList = (props) => {
 
                     </div>
                     <div className={'d-flex flex-fill justify-content-end'}>
-                        <Button onClick={() => deleteContact({ contact })} variant={'outline-light'} as={'div'} className={'text-danger border-0 p-0 my-auto fs-4'}>
-                            <Trash />
+                        <ContactItemActionButton tooltipText="edit"
+                            onClickAction={deleteContact}
+                            icon={<PencilSquare />}
+                            color="text-primary"
+                            contact={contact} />
+                        <ContactItemActionButton tooltipText="archive"
+                            onClickAction={deleteContact}
+                            icon={<FileZip />}
+                            color="text-success"
+                            contact={contact} />
+                        <ContactItemActionButton tooltipText="remove"
+                            onClickAction={deleteContact}
+                            icon={<Trash />}
+                            color="text-danger"
+                            contact={contact} />
+
+                        {/* <Button onClick={() => deleteContact({ contact })} variant={'outline-light'} as={'div'} className={'text-success border-0 p-0 my-auto mx-2 fs-4'}>
+                            <FileZip onClick={() => archiveContact({ contact })} />
                         </Button>
+                        <Button onClick={() => deleteContact({ contact })} variant={'outline-light'} as={'div'} className={'text-danger border-0 p-0 my-auto mx-2 fs-4'}>
+                            <Trash />
+                        </Button> */}
                     </div>
                 </div>
 
@@ -65,9 +104,10 @@ export default ContactList = (props) => {
 
     return (
         <>
-            <span style={{
-                fontSize: '.8em',
-            }} className={'text-start fw-bolder text-muted'}>CONTACT LIST</span>
+            <div className="d-flex justify-content-between">
+                <span className={'text-start fw-bolder text-muted mt-auto'}>CONTACT LIST</span>
+                <ContactFormModal />
+            </div>
             <hr />
             {
                 contacts.length === 0 ? <p className={'text-center text-muted'}>Contact list is empty</p> :

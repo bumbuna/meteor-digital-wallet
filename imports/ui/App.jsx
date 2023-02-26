@@ -1,5 +1,4 @@
 import React from 'react';
-import AddContactForm from "./AddContactForm";
 import ContactList from "./ContactList";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Col, Row, Container, Navbar } from "react-bootstrap";
@@ -20,9 +19,6 @@ export const App = () => (
         </Navbar>
         <Container className={'pt-3'}>
             <Row cols={2}>
-                <Col xs={12}>
-                    <AddContactForm />
-                </Col>
                 <Col>
                     <ContactList />
                 </Col>

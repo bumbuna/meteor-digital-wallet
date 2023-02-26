@@ -60,7 +60,7 @@ export default AddContactForm = () => {
             saveNewContact()
         }}>
             {ContactFormAlert({ message: errorMessage || successMessage, variant: errorMessage ? 'danger' : 'success' })}
-            <Row md={3} sm={1} xs={1}>
+            <Row className="gy-2" xs={1}>
                 <Col>
                     <ContactFormGroup key='name' type={'text'} value={name} updateValue={setName} placeholder={'John Doe'} label={'full name:'} />
                 </Col>
