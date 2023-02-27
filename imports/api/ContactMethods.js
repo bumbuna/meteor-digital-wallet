@@ -16,5 +16,15 @@ Meteor.methods({
             throw new Meteor.Error('please provide a valid Id')
         }
         return ContactsCollection.remove({ _id: id })
+    },
+    'contacts.update': function ({ _id, name, email, profileImageUrl }) {
+        if (!name || !email || !profileImageUrl) {
+            throw new Meteor.Error((!name ? 'Name' : !email ? 'Email Address' : 'Profile image Url') + ' is required')
+        }
+        return ContactsCollection.update({ _id }, {
+            $set: {
+                name, email, profileImageUrl
+            }
+        })
     }
 })

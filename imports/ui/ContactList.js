@@ -1,9 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { ContactsCollection } from "../api/Contact";
 import { useFind, useSubscribe } from 'meteor/react-meteor-data'
 import { Image, ListGroup, Ratio, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FileZip, PencilSquare, Trash } from "react-bootstrap-icons";
-import { ContactFormModal } from "./ContactFormModal";
+import { AddContactFormModal } from "./AddContactFormModal";
+import { EditContactFormModal } from "./EditContactFormModal";
 
 const ContactItemActionButton = ({ contact, tooltipText = '', onClickAction, color = '', icon }) => {
     return (
@@ -25,6 +26,9 @@ const ContactItemActionButton = ({ contact, tooltipText = '', onClickAction, col
 
 export default ContactList = (props) => {
     const isLoading = useSubscribe('allcontacts');
+    const [showUpdateModal, setShowUpdateModal] = useState(false)
+    const [useContact, setUseContact] = useState({})
+
     let contacts = useFind(() => {
         return ContactsCollection.find({}, { sort: { addedOn: -1 } })
     })
@@ -74,15 +78,18 @@ export default ContactList = (props) => {
                     </div>
                     <div className={'d-flex flex-fill justify-content-end'}>
                         <ContactItemActionButton tooltipText="edit"
-                            onClickAction={deleteContact}
+                            onClickAction={() => {
+                                setUseContact(contact)
+                                setShowUpdateModal(true)
+                            }}
                             icon={<PencilSquare />}
                             color="text-primary"
                             contact={contact} />
-                        <ContactItemActionButton tooltipText="archive"
-                            onClickAction={deleteContact}
+                        {/* <ContactItemActionButton tooltipText="archive"
+                            onClickAction={() => { }}
                             icon={<FileZip />}
                             color="text-success"
-                            contact={contact} />
+                            contact={contact} /> */}
                         <ContactItemActionButton tooltipText="remove"
                             onClickAction={deleteContact}
                             icon={<Trash />}
@@ -106,7 +113,10 @@ export default ContactList = (props) => {
         <>
             <div className="d-flex justify-content-between">
                 <span className={'text-start fw-bolder text-muted mt-auto'}>CONTACT LIST</span>
-                <ContactFormModal />
+                <AddContactFormModal />
+                <EditContactFormModal show={showUpdateModal} contact={useContact} closeModal={() => {
+                    setShowUpdateModal(false)
+                }} />
             </div>
             <hr />
             {

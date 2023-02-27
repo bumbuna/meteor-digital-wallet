@@ -5,7 +5,7 @@ import AddContactForm from "./AddContactForm";
 import { PersonAdd } from "react-bootstrap-icons";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
-export const ContactFormModal = (props) => {
+export const AddContactFormModal = (props) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
